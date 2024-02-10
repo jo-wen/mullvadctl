@@ -23,17 +23,17 @@ checks that the download is verifiable using gpg and the signatures.
 
 ## usage
 
-# first time use (or you want to refresh the configs)
+- first time use (or you want to refresh the configs)
 ```
 sudo ./mullvadctl.sh -i
 ```
 
-# start a random connection
+- start a random connection
 ```
 sudo ./mullvadctl.sh
 ```
 
-# bring down a connection without starting a new connection
+- bring down a connection without starting a new connection
 ```
 sudo ./mullvadctl.sh -d
 ```
