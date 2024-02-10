@@ -1,39 +1,62 @@
 # mullvadctl
 
-tools to make using mullvad on an unsupported system easier (written with arch/pacman in mind)
+tools to make mullvad easier to use on unsupported systems (written with arch/pacman in mind)
 
-## table of contents
-
-- [install](#install)
-- [usage](#usage)
 
 ## install
 
-to install clone this repo to any location and run the mullvad_install.sh script.
 ```
 git clone https://github.com/jo-wen/mullvadctl.git
 cd mullvadctl
 sudo ./mullvad_install.sh
 ```
-this script checks that you have the correct dependencies and (using pacman) checks for the packages.
-will install packages for you but by default that line is commented out.
+**mullvad_install.sh** checks that you have the correct dependencies and (using pacman) checks for packages.
+asks to install packages with pacman if you are missing any.
 installs the official mullvad-wg.sh script along with some signature files.
 checks that the download is verifiable using gpg and the signatures.
+runs **mullvad-wg.sh** to install mullvad configs into /etc/wireguard/.
 
 
 ## usage
 
-- first time use (or you want to refresh the configs)
+refresh configs (runs mullvad-wg.sh)
 ```
 sudo ./mullvadctl.sh -i
 ```
 
-- start a random connection
+brings down current connection and starts a new random connection
 ```
 sudo ./mullvadctl.sh
 ```
 
-- bring down a connection without starting a new connection
+brings down current connection and starts a new connection based on country given.
+this is matching the config name to the country and choosing one of the matches at random.
+```
+sudo ./mullvadctl.sh -c japan
+sudo ./mullvadctl.sh -c germany
+sudo ./mullvadctl.sh -c brazil
+```
+
+bring down a connection
 ```
 sudo ./mullvadctl.sh -d
+```
+
+check connection status
+```
+./mullvadctl.sh -s
+```
+
+list the available countries (this is hard coded at the moment)
+```
+./mullvadctl.sh -l
+```
+
+aliased to mvc on my systems
+```
+sudo mvc
+mvc -l
+mvc -h
+sudo mvc -d
+sudo mvc -c canada
 ```

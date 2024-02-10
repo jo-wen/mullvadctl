@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ##
 # josht
 # @jo-wen
@@ -7,10 +7,12 @@
 ##
 
 # need sudo because all wireguard stuff is root eyes only
-if [ "$EUID" -ne 0 ]; then
-  echo -e "need rootygooty"
-  exit 1
-fi
+function auth {
+  if [ "$EUID" -ne 0 ]; then
+   echo -e "need rootygooty"
+   exit 1
+  fi
+}
 
 # some var
 MULLVAD_CONF_DIR="/etc/wireguard/"
@@ -18,10 +20,8 @@ MULLVAD_CONF_DIR="/etc/wireguard/"
 # check if wg is connected
 # exit if yes
 
-# run install_configs.sh
 # this verifies acct, sets up config files and dirs.
-# this needs root (it prompts) because it installs wireguard configs
-# to /etc/wireguard/ all root only perms.
+# conf files live in /etc/wireguard/ all root only perms.
 function install_configs {
   set -e
   echo -e "\n## installing configs"
@@ -232,6 +232,7 @@ while getopts ":hilc:ds" opt; do
       exit
       ;;
     i)
+      auth
       down
       install_configs
       exit
@@ -241,10 +242,12 @@ while getopts ":hilc:ds" opt; do
       exit
       ;;
     d)
+      auth
       down
       exit
       ;;
     c)
+      auth
       country="$OPTARG"
       down
       connect_to "$country"
@@ -266,6 +269,7 @@ while getopts ":hilc:ds" opt; do
   esac
 done
 
+auth;
 down;
 connect;
 display_stats

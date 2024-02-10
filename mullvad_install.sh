@@ -1,10 +1,18 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ##
 # josht
 ##
 # installs mullvad stuff into whatever dir its in.
-# if first time running go uncomment the requirements line
+# built for use with pacman
 ##
+
+# auth
+function auth {
+  if [ "$EUID" -ne 0 ]; then
+   echo -e "need rootygooty"
+   exit 1
+  fi
+}
 
 # install the following:
 # - curl
@@ -12,19 +20,24 @@
 # - openresolv
 # - wireguard
 #
-# requirements: uncomment to install
-# sudo pacman -Syu curl jq openresolv wireguard-tools
-#
-# check the right commands exist in the system
+function install_reqs {
+  pacman -Syu curl jq openresolv wireguard-tools
+}
+
+# check for commands
 function check_depends {
   echo -e "\n## checking system and pacman"
   if ! command -v curl jq wg &> /dev/null; then
    echo -e "\nmissing a dependency"
   fi
 
-  # might as well check pacman too while we're here
+  # check pacman and ask to install
   if ! pacman -Qk curl jq openresolv wireguard-tools; then
     echo -e "\nmissing pacman packages"
+    read -p "install missing packages [y/anything else]" yn
+    if "$yn" == "y"; then
+      install_reqs
+    fi
   fi
 }
 
@@ -47,6 +60,16 @@ function dl_script {
   gpg --verify mullvad-wg.sh.asc
 }
 
+# install conf files using mullvad script.
+# conf files live in /etc/wireguard/ root only perms
+function install_configs {
+  set -e
+  echo -e "\n## installing configs"
+  ./mullvad-wg.sh
+}
+
 # main
+auth
 check_depends
 dl_script
+install_configs
