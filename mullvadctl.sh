@@ -3,7 +3,7 @@
 # josht
 # @jo-wen
 ##
-# start wireguard/mullvad (get a wg connection)
+# helper script for wireguard and mullvad
 ##
 
 # need sudo because all wireguard stuff is root eyes only
@@ -14,21 +14,18 @@ function auth {
   fi
 }
 
-# some var
+# config dir
 MULLVAD_CONF_DIR="/etc/wireguard/"
 
-# check if wg is connected
-# exit if yes
-
 # this verifies acct, sets up config files and dirs.
-# conf files live in /etc/wireguard/ all root only perms.
+# config files live in /etc/wireguard/ all root only perms.
 function install_configs {
   set -e
   echo -e "\n## installing configs"
   ./mullvad-wg.sh
 }
 
-# display_stats
+# get info from mullvad api and show output of wg
 function display_stats {
   echo -e "\n## check with mullvad"
   curl -s https://am.i.mullvad.net/json | jq .
@@ -42,23 +39,21 @@ function choose_random_config {
   set -e
   files=($(find "$MULLVAD_CONF_DIR" -maxdepth 1 -type f -name '*.conf'))
 
-  # errors if no conf files
+  # errors if no config files
   if [ "${#files[@]}" -eq 0 ]; then
-    echo -e "no conf files"
+    echo -e "no config files"
     return 1
   fi
 
-  # echo -e "picking random conf"
+  # echo -e "picking random config"
   random_index=$((RANDOM % ${#files[@]}))
-  random_conf="${files[$random_index]}"
+  random_config="${files[$random_index]}"
 
-  echo -e "$random_conf"
+  echo -e "$random_config"
 }
 
 
-# connect using a random conf.
-# verify/show connection with mullvad api.
-# show wg details.
+# connect using a random config.
 function connect {
   set -e
   echo -e "\n## connecting"
@@ -122,14 +117,14 @@ function connect_to {
 
   # if the country name exists as a key in the array
   if [ "${countries[$country]}" ]; then
-    # make array of conf files that match the country key value
-    conf_files=($(find "$MULLVAD_CONF_DIR" -maxdepth 1 -type f -name "${countries["$country"]}"\*))
-    # choose a conf at random within the conf file array
-    country_conf="${conf_files[1 + RANDOM % ${#conf_files[@]}]}"
+    # make array of config files that match the country key value
+    config_files=($(find "$MULLVAD_CONF_DIR" -maxdepth 1 -type f -name "${countries["$country"]}"\*))
+    # choose a config at random within the config file array
+    country_config="${config_files[1 + RANDOM % ${#config_files[@]}]}"
 
     # connect
-    echo -e "\n## connecting to $country_conf"
-    wg-quick up "$country_conf"
+    echo -e "\n## connecting to $country_config"
+    wg-quick up "$country_config"
   else
     echo -e "\n## cant find $country"
     echo -e "\n### countries ###"
@@ -199,9 +194,9 @@ function list_countries {
 function down {
   if [[ $(wg | grep "peer") ]]; then
     echo -e "\n## dropping current wg connection"
-    # conf is too fragile here but this is easy
-    conf=$(wg | grep interface | awk '{print $2}')
-    wg-quick down "$conf"
+    # config is too fragile here but this is easy
+    config=$(wg | grep interface | awk '{print $2}')
+    wg-quick down "$config"
   fi
 }
 
