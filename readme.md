@@ -10,8 +10,7 @@ tools to make using mullvad on an unsupported system easier (written with arch/p
 ## install
 
 to install clone this repo to any location and run the mullvad_install.sh script.
-```bash
-# Example installation commands
+```
 git clone https://github.com/jo-wen/mullvadctl.git
 cd mullvadctl
 sudo ./mullvad_install.sh
