@@ -1,17 +1,3 @@
-mullvadctrl
-
-these are tools to make using mullvad on arch (or probably any distro that isn't officially supported) easier.
-install script built with pacman in mind.
-
-## mullvad_install.sh
-run the install script to check for dependencies on your machine and then download the official mullvad scripts and signatures.
-official mullvad script downloads information about configs and builds configs in /etc/wireguard/
-
-## mullvadctrl.sh
-script brings down a current connection if one exists and brings up a new connection using a random config.
-script needs root because it does some wireguard stuff that needs root.
-
-
 # mullvadctl
 
 tools to make using mullvad on an unsupported system easier (written with arch/pacman in mind)
