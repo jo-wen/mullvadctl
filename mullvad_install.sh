@@ -28,7 +28,7 @@ function check_depends {
   fi
 }
 
-function get_configs {
+function dl_script {
   # safety?
   set -e
 
@@ -47,5 +47,6 @@ function get_configs {
   gpg --verify mullvad-wg.sh.asc
 }
 
+# main
 check_depends
-get_configs
+dl_script

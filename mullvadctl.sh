@@ -76,6 +76,7 @@ function down {
 # help menu
 function display_help {
     echo -e "Usage: sudo $0 [options]"
+    echo -e "default behavior: bring down current connection, bring up new random connection"
     echo -e "Options:"
     echo -e "  -h, --help     this"
     echo -e "  -i, --install  install/refresh config files"
